@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT 10
 #define TRUE 1
@@ -16,7 +15,7 @@ typedef struct LNode
 {
     int data;
     struct LNode *next;
-} LNode;
+} LNode, *LinkList;
 
 /*
     L -> NULL
@@ -26,30 +25,39 @@ typedef struct LNode
     L -> ([][*next]) -> ([e][*next]) -> NULL
 */
 
-void CreateList_LNode(LNode *L, int n)
+void CreateList_LNode(LinkList L, int n)
 {
-    L = (LNode *)malloc(sizeof(LNode));
     L->next = NULL;
     for (int i = 0; i < n; i++)
     {
-        LNode *p = (LNode *)malloc(sizeof(LNode));
-        int c;
-        scanf("%d", &c);
-        printf("%d", c);
-        p->data = c;
+        LinkList p = (LinkList)malloc(sizeof(LNode));
+        scanf("%d", &p->data);
         p->next = L->next;
         L->next = p;
     }
 }
+
+void PrintAllMember(LinkList L)
+{
+    LinkList p = L->next;
+    while (p != NULL)
+    {
+        printf("%d ", p->data);
+        p = p->next;
+    }
+    printf("\n");
+}
+
 /*       data
     L -> *next -> NULL
+
+    L -> 4 -> 3 -> NULL
 */
 
-Status GetElem_L(LNode *L, int i, char *e)
+Status GetElem_L(LinkList L, int i, int *e)
 {
-    LNode *p = L->next;
-    int j = 1;
-    for (int j = 1; p && j < i; j++)
+    LinkList p = L->next;
+    for (int j = 1; p != NULL && j < i; j++)
     {
         p = p->next;
     }
@@ -66,12 +74,11 @@ Status GetElem_L(LNode *L, int i, char *e)
 
 int main()
 {
-    LNode *L;
-    CreateList_LNode(L, 5);
-    for (int i = 1; i < 5; i++)
-    {
-        char *a;
-        GetElem_L(L, i, a);
-        printf("%s ", a);
-    }
+    int a;
+    LinkList Mylist = (LinkList)malloc(sizeof(LNode));
+    CreateList_LNode(Mylist, 2);
+    PrintAllMember(Mylist);
+    Status status = GetElem_L(Mylist, 3, &a);
+    printf("%d\n", status);
+    printf("%d", a);
 }
