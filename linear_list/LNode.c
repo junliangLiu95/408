@@ -72,13 +72,106 @@ Status GetElem_L(LinkList L, int i, int *e)
     return OK;
 }
 
+/*
+    L -> 1 -> 2 -> NULL
+    insert e
+    p
+    L -> 1 -> 2 -> NULL
+    e.next =  p.next;p.next = *e;
+*/
+
+Status ListInsert_L(LinkList L, int i, int e)
+{
+    LinkList p = L;
+    LinkList new = (LinkList)malloc(sizeof(LNode));
+    new->data = e;
+    int j = 0;
+    for (; p != NULL && j < i - 1; j++)
+    {
+        p = p->next;
+    }
+    //确保 i>=1
+    if (p && j == i - 1)
+    {
+        new->next = p->next;
+        p->next = new;
+        return OK;
+    }
+    else
+    {
+        return OVERFLOW;
+    }
+}
+
+/*
+    p    q
+    L -> 1 -> 2 -> NULL
+*/
+
+Status ListDelete_L(LinkList L, int i, int *e)
+{
+    LinkList p, q;
+    p = L;
+    int j = 0;
+    for (; p && j < i - 1; j++)
+    {
+        p = p->next;
+    }
+    if (p && j == i - 1)
+    {
+        q = p->next;
+        p->next = p->next->next;
+        *e = q->data;
+        free(q);
+        return OK;
+    }
+    else
+    {
+        return OVERFLOW;
+    }
+}
+
+/*  pc    pa
+    La -> 1 -> 3 -> NULL
+          pb
+    Lb -> 1 -> 2 -> 5 -> NULL
+*/
+
+void MergeList_L(LinkList La, LinkList Lb, LinkList Lc)
+{
+    LinkList pa, pb, pc;
+    pa = La->next;
+    pb = Lb->next;
+    Lc = pc = La;
+    while (pa && pb)
+    {
+        if (pa->data <= pb->data)
+        {
+            pc->next = pa;
+            pc = pa;
+            pa = pa->next;
+        }
+        else
+        {
+            pc->next = pb;
+            pc = pb;
+            pb = pb->next;
+        }
+    }
+    pc->next = pa ? pa : pb;
+    free(Lb);
+}
+
 int main()
 {
     int a;
-    LinkList Mylist = (LinkList)malloc(sizeof(LNode));
-    CreateList_LNode(Mylist, 2);
-    PrintAllMember(Mylist);
-    Status status = GetElem_L(Mylist, 3, &a);
-    printf("%d\n", status);
-    printf("%d", a);
+    LinkList La = (LinkList)malloc(sizeof(LNode));
+    LinkList Lb = (LinkList)malloc(sizeof(LNode));
+    LinkList Lc = (LinkList)malloc(sizeof(LNode));
+    CreateList_LNode(La, 2);
+    CreateList_LNode(Lb, 3);
+    PrintAllMember(La);
+    PrintAllMember(Lb);
+    MergeList_L(La, Lb, Lc);
+    PrintAllMember(La);
 }
