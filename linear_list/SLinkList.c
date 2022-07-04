@@ -78,12 +78,18 @@ void Insert_SL(SLinkList space, int head, int i, int e)
 
 Status Delete_SL(SLinkList space, int head, int i, int *e)
 {
-    int p = space[head].cur;
+    int p = head;
     if (p == 0)
         return OVERFLOW;
     for (int j = 1; j < i; j++)
     {
+        p = space[p].cur;
     }
+    int next = space[p].cur;
+    space[p].cur = space[next].cur;
+    *e = space[next].data;
+    Free_SL(space, next);
+    return OK;
 }
 
 void Print_SL(SLinkList space, int head)
@@ -109,10 +115,14 @@ void Print_SL(SLinkList space, int head)
 int main()
 {
     SLinkList s;
+    int e;
     Reserve_SL(s);
     int head = InitSpace_SL(s);
     Insert_SL(s, head, 1, 1);
     Insert_SL(s, head, 2, 2);
-    Print_SL(s, 1);
+    Print_SL(s, head);
+    Delete_SL(s, head, 2, &e);
+    printf("delete item val: %d\n", e);
+    Print_SL(s, head);
     return 0;
 }
