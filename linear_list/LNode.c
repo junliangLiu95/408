@@ -37,7 +37,7 @@ void CreateList_LNode(LinkList L, int n)
     }
 }
 
-void PrintAllMember(LinkList L)
+void PrintAllMember_LNode(LinkList L)
 {
     LinkList p = L->next;
     while (p != NULL)
@@ -54,7 +54,7 @@ void PrintAllMember(LinkList L)
     L -> 4 -> 3 -> NULL
 */
 
-Status GetElem_L(LinkList L, int i, int *e)
+Status GetElem_LNode(LinkList L, int i, int *e)
 {
     LinkList p = L->next;
     for (int j = 1; p != NULL && j < i; j++)
@@ -80,7 +80,7 @@ Status GetElem_L(LinkList L, int i, int *e)
     e.next =  p.next;p.next = *e;
 */
 
-Status ListInsert_L(LinkList L, int i, int e)
+Status ListInsert_LNode(LinkList L, int i, int e)
 {
     LinkList p = L;
     LinkList new = (LinkList)malloc(sizeof(LNode));
@@ -108,7 +108,7 @@ Status ListInsert_L(LinkList L, int i, int e)
     L -> 1 -> 2 -> NULL
 */
 
-Status ListDelete_L(LinkList L, int i, int *e)
+Status ListDelete_LNode(LinkList L, int i, int *e)
 {
     LinkList p, q;
     p = L;
@@ -137,7 +137,7 @@ Status ListDelete_L(LinkList L, int i, int *e)
     Lb -> 1 -> 2 -> 5 -> NULL
 */
 
-void MergeList_L(LinkList La, LinkList Lb, LinkList Lc)
+void MergeList_LNode(LinkList La, LinkList Lb, LinkList Lc)
 {
     LinkList pa, pb, pc;
     pa = La->next;
@@ -170,8 +170,8 @@ int main()
     LinkList Lc = (LinkList)malloc(sizeof(LNode));
     CreateList_LNode(La, 2);
     CreateList_LNode(Lb, 3);
-    PrintAllMember(La);
-    PrintAllMember(Lb);
-    MergeList_L(La, Lb, Lc);
-    PrintAllMember(La);
+    PrintAllMember_LNode(La);
+    PrintAllMember_LNode(Lb);
+    MergeList_LNode(La, Lb, Lc);
+    PrintAllMember_LNode(La);
 }
