@@ -186,6 +186,18 @@ Position LocateElem(LinkList L, PElemType e, Status (*compare)(PElemType, PElemT
     return NULL;
 }
 
+void Delete(LinkList *L, Position p)
+{
+    Position prior = L->head;
+    while (prior->next != p)
+    {
+        prior = prior->next;
+    }
+    prior->next = p->next;
+    L->len--;
+    FreeNode(p);
+}
+
 void ListTraverse(LinkList L, void (*visit)(PElemType))
 {
     Link p = L.head;
