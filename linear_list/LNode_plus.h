@@ -68,7 +68,6 @@ Status DelFirst(LinkList *L, Link h)
 Status Append(LinkList *L, Link s)
 {
     L->tail->next = s;
-    (*L).tail->next = s;
     Position tail = s;
     int lenS = 1;
     while (tail->next != NULL)
@@ -97,6 +96,7 @@ Status Remove(LinkList *L, Link *q)
         pre = pre->next;
     }
     pre->next = NULL;
+    L->tail = pre;
     L->len--;
     return OK;
 }
@@ -188,6 +188,8 @@ Position LocateElem(LinkList L, PElemType e, Status (*compare)(PElemType, PElemT
 
 void Delete(LinkList *L, Position p)
 {
+    if (p == L->head)
+        exit(0);
     Position prior = L->head;
     while (prior->next != p)
     {
@@ -195,7 +197,8 @@ void Delete(LinkList *L, Position p)
     }
     prior->next = p->next;
     L->len--;
-    FreeNode(p);
+    if (p == L->tail)
+        L->tail = prior;
 }
 
 void ListTraverse(LinkList L, void (*visit)(PElemType))

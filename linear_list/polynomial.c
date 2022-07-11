@@ -107,31 +107,23 @@ void PrintPolyn(polynomial p)
 
 void AddPolyn(polynomial *A, polynomial *B)
 {
-    printf("into AddPolyn");
     Link la = A->head->next;
-    printf("la %d", la->data->expn);
     Link lb = B->head->next;
-    printf("lb %d", lb->data->expn);
-    while (la && lb)
+    while (la != NULL && lb != NULL)
     {
         Link lc;
         float sum;
         switch (cmp(la->data, lb->data))
         {
         case -1:
-            printf("into -1\n");
             la = la->next;
             break;
         case 1:
-            printf("into 1\n");
             lc = lb;
             lb = lb->next;
-            printf("Before ins\n");
             InsBefore(A, la, lc);
-            printf("After ins Before\n");
             break;
         case 0:
-            printf("into 0\n");
             sum = la->data->coef + lb->data->coef;
             if (sum != 0.0)
             {
@@ -146,17 +138,14 @@ void AddPolyn(polynomial *A, polynomial *B)
             }
             else
             {
-                printf("into 0 else\n");
                 Position pc = la;
                 Position pd = lb;
                 lb = lb->next;
                 la = la->next;
-                printf("Before Del\n");
                 Delete(A, pc);
-                printf("After Del\n");
-                printf("Before Del\n");
+                FreeNode(pc);
                 Delete(B, pd);
-                printf("After Del\n");
+                FreeNode(pd);
             }
             break;
         }

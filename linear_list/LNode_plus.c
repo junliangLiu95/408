@@ -20,13 +20,19 @@ Status compare(PElemType a, PElemType b)
 int main()
 {
     LinkList L;
+    LinkList L2;
     InitList(&L);
+    InitList(&L2);
     for (int i = 0; i < 5; i++)
     {
         PElemType PE = (PElemType)malloc(sizeof(ElemType));
+        PElemType PE2 = (PElemType)malloc(sizeof(ElemType));
         PE->data = i + 1;
+        PE2->data = i + 5;
         Link p = MakeNode(PE);
+        Link p2 = MakeNode(PE2);
         Append(&L, p);
+        Append(&L2, p2);
     }
     printf("Origin LinkList:\n");
     ListTraverse(L, visit);
@@ -63,6 +69,16 @@ int main()
     PElemType PE4 = (PElemType)malloc(sizeof(ElemType));
     PE4->data = 8;
     Position p7 = LocateElem(L, PE4, compare);
-    printf("Locate value 8 Link's val = %d", p7->data->data);
+    printf("Locate value 8 Link's val = %d\n", p7->data->data);
+    Link L2_1st = L2.head->next;
+    printf("L tail %d\n", L.tail->data->data);
+    printf("L2_1st %d\n", L2_1st->data->data);
+    printf("L:\n");
+    ListTraverse(L, visit);
+    printf("L2:\n");
+    ListTraverse(L2, visit);
+    printf("L append L2:\n");
+    Append(&L, L2_1st);
+    ListTraverse(L, visit);
     return 0;
 }
