@@ -36,6 +36,9 @@ int main()
     }
     printf("Origin LinkList:\n");
     ListTraverse(L, visit);
+    printf("LinkList Reversal:\n");
+    Reversal_V2(&L);
+    ListTraverse(L, visit);
     PElemType PE1 = (PElemType)malloc(sizeof(ElemType));
     PE1->data = 8;
     Link p1 = MakeNode(PE1);

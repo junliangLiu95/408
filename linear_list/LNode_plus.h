@@ -201,6 +201,50 @@ void Delete(LinkList *L, Position p)
         L->tail = prior;
 }
 
+/*
+    head -> 1 -> 2 -> null
+*/
+
+void traverse(Link preLink)
+{
+    Link curLink = preLink->next;
+    if (curLink)
+    {
+        traverse(curLink);
+        curLink->next = preLink;
+    }
+}
+
+void Reversal(LinkList *L)
+{
+    if (L->head == L->tail)
+        return;
+    traverse(L->head->next);
+    Link tmp = L->tail;
+    L->tail = L->head->next;
+    L->tail->next = NULL;
+    L->head->next = tmp;
+}
+
+void Reversal_V2(LinkList *L)
+{
+    if (L->head == L->tail)
+        return;
+    Link prev = NULL;
+    Link current = L->head->next;
+    Link next = NULL;
+    while (current)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    Link tmp = L->tail;
+    L->tail = L->head->next;
+    L->head->next = tmp;
+}
+
 void ListTraverse(LinkList L, void (*visit)(PElemType))
 {
     Link p = L.head;
