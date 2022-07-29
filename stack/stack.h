@@ -101,13 +101,13 @@ Status LNodeStack_Push(LNodeStack *S, PSElemType e)
     return OK;
 }
 
-Status LNodeStack_Pop(LNodeStack *S, PSElemType e)
+PSElemType LNodeStack_Pop(LNodeStack *S)
 {
     if (!S->top)
         exit(OVERFLOW);
-    e = S->top->data;
+    PSElemType e = S->top->data;
     S->top = S->top->next;
-    return OK;
+    return e;
 }
 
 void LNodeStackTraverse(LNodeStack S, void (*visit)(PSElemType))
