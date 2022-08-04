@@ -73,6 +73,12 @@ Status Pop(SqStack *S, int *s)
     return OK;
 }
 
+Status ClearStack(SqStack *S)
+{
+    S->top = S->base;
+    return OK;
+}
+
 void StackTraverse(SqStack S, void (*visit)(int))
 {
     int *p = S.top;
@@ -89,6 +95,24 @@ Status InitLNodeStack(LNodeStack *S)
 {
     S->top = NULL;
     return OK;
+}
+
+Status ClearLNodeStack(LNodeStack *S)
+{
+    LNode *p = S->top;
+    while (p)
+    {
+        LNode *tmp = p;
+        p = p->next;
+        free(tmp);
+    }
+    S->top = NULL;
+    return OK;
+}
+
+Status StackEmpty(LNodeStack S)
+{
+    return S.top == NULL ? TRUE : FALSE;
 }
 
 Status LNodeStack_Push(LNodeStack *S, PSElemType e)
@@ -118,6 +142,20 @@ void LNodeStackTraverse(LNodeStack S, void (*visit)(PSElemType))
         visit(p->data);
         p = p->next;
     }
+    printf("\n");
+}
+
+Status LNodeStack_exsit(LNodeStack S, PSElemType P, Status (*compare)(PSElemType, PSElemType))
+{
+    LNode *p = S.top;
+    while (p != NULL)
+    {
+        Status same = compare(p->data, P);
+        if (same == OK)
+            return TRUE;
+        p = p->next;
+    }
+    return FALSE;
 }
 
 /*
