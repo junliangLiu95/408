@@ -1,10 +1,4 @@
 #include "stack.h"
-
-typedef struct PostType
-{
-    int x;
-    int y;
-};
 typedef struct SElemType
 {
     char data;
