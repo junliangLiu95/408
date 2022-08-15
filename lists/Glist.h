@@ -33,7 +33,7 @@ typedef struct GLNode
 
 typedef struct SElemType
 {
-    GLNode data;
+    struct GLNode *data;
 } SElemType;
 
 /*
@@ -48,7 +48,7 @@ typedef struct SElemType
     A[]
     D[1][ ][^]
          |
-         *[1][^][ ]--*B[1][ ][^] ---------*C[1][ ][^]
+         *[1][^][ ]--*B[1][ ][ ] ---------*C[1][ ][^]
                            |                    |
                            *[0]['e'][^]         *[0]['a'][ ]--*[1][ ][^]
                                                                    |
@@ -57,7 +57,7 @@ typedef struct SElemType
 
 Status InitGList(GLNode *L)
 {
-    L->tag = ATOM;
+    L->tag = LIST;
     L->hp = NULL;
     L->tp = NULL;
     return OK;
@@ -71,18 +71,99 @@ Status CreateGList(GLNode *L, char *S)
     LNodeStack stack;
     InitLNodeStack(&stack);
     // 1: child of curL, 2: next of curL
-    int operation = 0;
+    int operation = 1;
+    char *p = ++S;
+    curL = L;
     PSElemType e = (PSElemType)malloc(sizeof(SElemType));
-    e->data.tag = LIST;
-    e->data.hp = NULL;
-    e->data.tp = NULL;
-    curL = &e->data;
+    e->data = L;
     LNodeStack_Push(&stack, e);
-    char *p = S;
     while (*p != '\0')
     {
-        printf("%c", *p);
+        if (*p == '(')
+        {
+            GLNode *pn = (GLNode *)malloc(sizeof(GLNode));
+            pn->tag = LIST;
+            pn->hp = NULL;
+            pn->tp = NULL;
+            if (operation == 1)
+            {
+                curL->hp = pn;
+            }
+            else if (operation == 2)
+            {
+                curL->tp = pn;
+            }
+            PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+            e->data = pn;
+            curL = pn;
+            LNodeStack_Push(&stack, e);
+            operation = 1;
+        }
+        else if (*p == ',')
+        {
+            operation = 2;
+        }
+        else if (*p == ')')
+        {
+            PSElemType e = LNodeStack_Pop(&stack);
+            curL = e->data;
+        }
+        else
+        {
+            GLNode *pn = (GLNode *)malloc(sizeof(GLNode));
+            pn->tag = ATOM;
+            pn->atom = *p;
+            pn->tp = NULL;
+            if (operation == 1)
+            {
+                curL->hp = pn;
+            }
+            else if (operation == 2)
+            {
+                curL->tp = pn;
+            }
+            curL = pn;
+        }
         p++;
     }
     return OK;
+}
+
+void GLists_Traverse(GList L, int isRoot)
+{
+    if (L->tag == LIST)
+    {
+        printf("(");
+        if (L->hp)
+        {
+            GLists_Traverse(L->hp, 0);
+        }
+        else
+        {
+            printf(")");
+        }
+        if (L->tp)
+        {
+            printf(",");
+            GLists_Traverse(L->tp, 0);
+        }
+        else
+        {
+            if (isRoot == 0)
+                printf(")");
+        }
+    }
+    if (L->tag == ATOM)
+    {
+        printf("%c", L->atom);
+        if (L->tp)
+        {
+            printf(",");
+            GLists_Traverse(L->tp, 0);
+        }
+        else
+        {
+            printf(")");
+        }
+    }
 }
