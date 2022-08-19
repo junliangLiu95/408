@@ -129,41 +129,156 @@ Status CreateGList(GLNode *L, char *S)
     return OK;
 }
 
-void GLists_Traverse(GList L, int isRoot)
+void DestroyGList(GList L)
+{
+
+    if (L->tp != NULL)
+    {
+        DestroyGList(L->tp);
+    }
+    if (L->tag == LIST && L->hp != NULL)
+    {
+        DestroyGList(L->hp);
+    }
+    free(L);
+}
+
+void GLists_Traverse(GList L)
 {
     if (L->tag == LIST)
     {
         printf("(");
         if (L->hp)
         {
-            GLists_Traverse(L->hp, 0);
+            for (GList p = L->hp; p; p = p->tp)
+            {
+                GLists_Traverse(p);
+                if (p->tp)
+                {
+                    printf(",");
+                }
+            }
         }
-        else
-        {
-            printf(")");
-        }
-        if (L->tp)
-        {
-            printf(",");
-            GLists_Traverse(L->tp, 0);
-        }
-        else
-        {
-            if (isRoot == 0)
-                printf(")");
-        }
+        printf(")");
     }
     if (L->tag == ATOM)
     {
         printf("%c", L->atom);
-        if (L->tp)
+    }
+}
+
+int GListDepth(GList L)
+{
+    if (!L)
+        return 1;
+    if (L->tag == ATOM)
+        return 0;
+    int max = 0;
+    for (GList p = L; p != NULL; p = p->tp)
+    {
+        int depth = GListDepth(p->hp);
+        if (depth > max)
+            max = depth;
+    }
+    return max + 1;
+}
+
+int GListItem(GList L)
+{
+    if (L->tag == ATOM)
+        return 1;
+    int sum = 0;
+    for (GList p = L->hp; p; p = p->tp)
+    {
+        sum += GListItem(p);
+    }
+    return sum;
+}
+
+int GListLength(GList L)
+{
+    int len = 0;
+    for (GList p = L->hp; p; p = p->tp)
+    {
+        len++;
+    }
+    return len;
+}
+
+Status GListEmpty(GList L)
+{
+    if (L->tag == ATOM)
+        return TRUE;
+    if (L->hp)
+    {
+        return FALSE;
+    }
+    else
+    {
+        return TRUE;
+    }
+}
+
+GList GetHead(GList L)
+{
+    if (L->tag == LIST)
+    {
+        return L->hp;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+GList GetTail(GList L)
+{
+    if (L->tag == LIST)
+    {
+        GList p = (GList)malloc(sizeof(GLNode));
+        p->tag = LIST;
+        p->hp = L->hp->tp;
+        p->tp = NULL;
+        return p;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+void CopyGList(GList *T, GList L)
+{
+    if (!L)
+    {
+        *T = NULL;
+    }
+    else
+    {
+        *T = (GList)malloc(sizeof(GLNode));
+        if (L->tag == ATOM)
         {
-            printf(",");
-            GLists_Traverse(L->tp, 0);
+            (*T)->tag = ATOM;
+            (*T)->atom = L->atom;
+            CopyGList(&((*T)->tp), L->tp);
         }
         else
         {
-            printf(")");
+            (*T)->tag = LIST;
+            CopyGList(&((*T)->tp), L->tp);
+            CopyGList(&((*T)->hp), L->hp);
         }
     }
+}
+
+void InsertFirst(GList L, GList e)
+{
+    e->tp = L->hp;
+    L->hp = e;
+}
+
+void DeleteFirst(GList L, GList *e)
+{
+    *e = L->hp;
+    L->hp = L->hp->tp;
 }
