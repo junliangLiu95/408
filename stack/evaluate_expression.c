@@ -73,6 +73,26 @@ int Operate(char *a, char theta, char *b)
     return 0;
 }
 
+/*
+    72+9*(4-2)
+
+    OPTR           OPND          c
+    #
+    #              72
+    # +            72
+    # +            72 9
+    # + *          72 9
+    # + * (        72 9
+    # + * (        72 9 4
+    # + * ( -      72 9 4
+    # + * ( -      72 9 4 2
+    # + * (        72 9 6        )
+    # + *          72 9 6        #
+    # +            72 54         #
+    #              126           #
+                   126
+*/
+
 void EvaluateExpression()
 {
     LNodeStack OPTR, OPND;
