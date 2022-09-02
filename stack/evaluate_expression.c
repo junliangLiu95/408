@@ -74,7 +74,7 @@ int Operate(char *a, char theta, char *b)
 }
 
 /*
-    72+9*(4-2)
+    72+9*(4-2)#
 
     OPTR           OPND          c
     #

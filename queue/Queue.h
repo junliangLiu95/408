@@ -88,12 +88,9 @@ Status EnQueue(LinkQueue *Q, PElemType e)
 {
     QueuePtr newNode = (QueuePtr)malloc(sizeof(QNode));
     newNode->data = e;
-    newNode->next = Q->head->next;
-    Q->head->next = newNode;
-    if (QueueEmpty(*Q) == TRUE)
-    {
-        Q->real = newNode;
-    }
+    newNode->next = Q->real->next;
+    Q->real->next = newNode;
+    Q->real = newNode;
     return OK;
 }
 
@@ -107,7 +104,9 @@ Status DeQueue(LinkQueue *Q, PElemType *e)
     {
         *e = Q->head->next->data;
         if (Q->head->next == Q->real)
+        {
             Q->real = Q->head;
+        };
         Q->head->next = Q->head->next->next;
         return OK;
     }
