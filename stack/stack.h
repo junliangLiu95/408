@@ -36,9 +36,9 @@ typedef struct
 
 /*
                                            top ->
-               [ ]           [      ]             [ elme ]
-               [ ]  top  ->  [      ]             [ elme ]
-base & top ->  [ ]  base ->  [ elme ]    base ->  [ elme ]
+               [ ]           [      ]             [ elem ]
+               [ ]  top  ->  [      ]             [ elem ]
+base & top ->  [ ]  base ->  [ elem ]    base ->  [ elem ]
 
 */
 

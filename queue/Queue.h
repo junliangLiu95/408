@@ -12,13 +12,13 @@
 
 typedef int Status;
 
-struct ElemType;
+struct QElemType;
 
-typedef struct ElemType *PElemType;
+typedef struct QElemType *PQElemType;
 
 typedef struct QNode
 {
-    PElemType data;
+    PQElemType data;
     struct QNode *next;
 } QNode, *QueuePtr;
 
@@ -76,7 +76,7 @@ int QueueLength(LinkQueue Q)
     return len;
 }
 
-Status GetHead(LinkQueue Q, PElemType *e)
+Status GetHead(LinkQueue Q, PQElemType *e)
 {
     if (QueueEmpty(Q) == TRUE)
         return OVERFLOW;
@@ -84,7 +84,7 @@ Status GetHead(LinkQueue Q, PElemType *e)
     return OK;
 }
 
-Status EnQueue(LinkQueue *Q, PElemType e)
+Status EnQueue(LinkQueue *Q, PQElemType e)
 {
     QueuePtr newNode = (QueuePtr)malloc(sizeof(QNode));
     newNode->data = e;
@@ -94,7 +94,7 @@ Status EnQueue(LinkQueue *Q, PElemType e)
     return OK;
 }
 
-Status DeQueue(LinkQueue *Q, PElemType *e)
+Status DeQueue(LinkQueue *Q, PQElemType *e)
 {
     if (QueueEmpty(*Q) == TRUE)
     {
@@ -112,7 +112,7 @@ Status DeQueue(LinkQueue *Q, PElemType *e)
     }
 }
 
-void QueueTraverse(LinkQueue Q, void (*visit)(PElemType))
+void QueueTraverse(LinkQueue Q, void (*visit)(PQElemType))
 {
     QueuePtr p = Q.head->next;
     printf("Queue list is: ");

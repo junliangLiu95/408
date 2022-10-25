@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../queue/Queue.h"
+#include "../stack/stack.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -19,10 +20,15 @@ typedef struct BiTNode
     struct BiTNode *lchild, *rchild;
 } BiTNode, *BiTree;
 
-typedef struct ElemType
+typedef struct QElemType
 {
     BiTree data;
 } ElemType;
+
+typedef struct SElemType
+{
+    BiTree data;
+} SElemType;
 
 void CreateBiTree(BiTree *T, int *index);
 Status PreOrderTraverse(BiTree T, Status (*visit)(TElemType e));
@@ -102,58 +108,55 @@ Status PostOrderTraverse(BiTree T, Status (*visit)(TElemType))
 
 Status LevelOrderTraverse(BiTree T, Status (*visit)(TElemType e))
 {
-    LinkQueue q1, q2;
-    InitQueue(&q1);
-    InitQueue(&q2);
-    PElemType e = (PElemType)malloc(sizeof(ElemType));
+    LinkQueue q;
+    InitQueue(&q);
+    PQElemType e = (PQElemType)malloc(sizeof(ElemType));
     e->data = T;
-    EnQueue(&q1, e);
-    int group = 1;
-    while (QueueEmpty(q1) == FALSE || QueueEmpty(q2) == FALSE)
+    EnQueue(&q, e);
+    while (QueueEmpty(q) == FALSE)
     {
-        if (group == 1)
+        PQElemType p = (PQElemType)malloc(sizeof(ElemType));
+        DeQueue(&q, &p);
+        visit(p->data->data);
+        if (p->data->lchild)
         {
-            PElemType p = (PElemType)malloc(sizeof(ElemType));
-            DeQueue(&q1, &p);
-            visit(p->data->data);
-            if (p->data->lchild)
-            {
-                PElemType e = (PElemType)malloc(sizeof(ElemType));
-                e->data = p->data->lchild;
-                EnQueue(&q2, e);
-            }
-            if (p->data->rchild)
-            {
-                PElemType e = (PElemType)malloc(sizeof(ElemType));
-                e->data = p->data->rchild;
-                EnQueue(&q2, e);
-            }
-            if (QueueEmpty(q1) == TRUE)
-            {
-                group = 2;
-            }
+            PQElemType e = (PQElemType)malloc(sizeof(ElemType));
+            e->data = p->data->lchild;
+            EnQueue(&q, e);
         }
-        if (group == 2)
+        if (p->data->rchild)
         {
-            PElemType p = (PElemType)malloc(sizeof(ElemType));
-            DeQueue(&q2, &p);
-            visit(p->data->data);
-            if (p->data->lchild)
-            {
-                PElemType e = (PElemType)malloc(sizeof(ElemType));
-                e->data = p->data->lchild;
-                EnQueue(&q1, e);
-            }
-            if (p->data->rchild)
-            {
-                PElemType e = (PElemType)malloc(sizeof(ElemType));
-                e->data = p->data->rchild;
-                EnQueue(&q1, e);
-            }
-            if (QueueEmpty(q2) == TRUE)
-            {
-                group = 1;
-            }
+            PQElemType e = (PQElemType)malloc(sizeof(ElemType));
+            e->data = p->data->rchild;
+            EnQueue(&q, e);
+        }
+    }
+    return OK;
+}
+
+Status preOrderTraverseNonRecur(BiTree T, Status (*visit)(TElemType e))
+{
+    LNodeStack S;
+    InitLNodeStack(&S);
+    PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+    e->data = T;
+    LNodeStack_Push(&S, e);
+    while (StackEmpty(S) == FALSE)
+    {
+        PSElemType p;
+        p = LNodeStack_Pop(&S);
+        visit(p->data->data);
+        if (p->data->rchild)
+        {
+            PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+            e->data = p->data->rchild;
+            LNodeStack_Push(&S, e);
+        }
+        if (p->data->lchild)
+        {
+            PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+            e->data = p->data->lchild;
+            LNodeStack_Push(&S, e);
         }
     }
     return OK;

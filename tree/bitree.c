@@ -18,5 +18,7 @@ int main()
     InOrderTraverse(T, visit);
     printf("\nLevelOrder tree \n");
     LevelOrderTraverse(T, visit);
+    printf("\nPreOrder tree without recursion\n");
+    preOrderTraverseNonRecur(T, visit);
     return 0;
 }
