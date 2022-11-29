@@ -1,9 +1,8 @@
 #include "bitree.h"
 
-Status visit(TElemType e)
+void visit(TElemType e)
 {
     printf("%c,", e);
-    return OK;
 }
 
 int main()
@@ -16,9 +15,15 @@ int main()
     PreOrderTraverse(T, visit);
     printf("\nInOrder tree \n");
     InOrderTraverse(T, visit);
+    printf("\nPostOrder tree \n");
+    PostOrderTraverse(T, visit);
     printf("\nLevelOrder tree \n");
     LevelOrderTraverse(T, visit);
     printf("\nPreOrder tree without recursion\n");
     preOrderTraverseNonRecur(T, visit);
+    printf("\nInOrder tree without recursion\n");
+    inOrderTraverseNonRecur(T, visit);
+    printf("\nPostOrder tree without recursion\n");
+    postOrderTraverseNonRecur(T, visit);
     return 0;
 }

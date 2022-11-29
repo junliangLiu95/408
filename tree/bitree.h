@@ -31,10 +31,10 @@ typedef struct SElemType
 } SElemType;
 
 void CreateBiTree(BiTree *T, int *index);
-Status PreOrderTraverse(BiTree T, Status (*visit)(TElemType e));
-Status InOrderTraverse(BiTree T, Status (*visit)(TElemType e));
-Status PostOrderTraverse(BiTree T, Status (*visit)(TElemType e));
-Status LevelOrderTraverse(BiTree T, Status (*visit)(TElemType e));
+Status PreOrderTraverse(BiTree T, void (*visit)(TElemType e));
+Status InOrderTraverse(BiTree T, void (*visit)(TElemType e));
+Status PostOrderTraverse(BiTree T, void (*visit)(TElemType e));
+Status LevelOrderTraverse(BiTree T, void (*visit)(TElemType e));
 
 /*
              1
@@ -61,7 +61,7 @@ void CreateBiTree(BiTree *T, int *index)
     }
 }
 
-Status PreOrderTraverse(BiTree T, Status (*visit)(TElemType))
+Status PreOrderTraverse(BiTree T, void (*visit)(TElemType))
 {
     if (T)
     {
@@ -76,7 +76,7 @@ Status PreOrderTraverse(BiTree T, Status (*visit)(TElemType))
     return OK;
 }
 
-Status InOrderTraverse(BiTree T, Status (*visit)(TElemType))
+Status InOrderTraverse(BiTree T, void (*visit)(TElemType))
 {
     if (T)
     {
@@ -91,12 +91,12 @@ Status InOrderTraverse(BiTree T, Status (*visit)(TElemType))
     return OK;
 }
 
-Status PostOrderTraverse(BiTree T, Status (*visit)(TElemType))
+Status PostOrderTraverse(BiTree T, void (*visit)(TElemType))
 {
     if (T)
     {
-        InOrderTraverse(T->lchild, visit);
-        InOrderTraverse(T->rchild, visit);
+        PostOrderTraverse(T->lchild, visit);
+        PostOrderTraverse(T->rchild, visit);
         visit(T->data);
     }
     else
@@ -106,7 +106,7 @@ Status PostOrderTraverse(BiTree T, Status (*visit)(TElemType))
     return OK;
 }
 
-Status LevelOrderTraverse(BiTree T, Status (*visit)(TElemType e))
+Status LevelOrderTraverse(BiTree T, void (*visit)(TElemType e))
 {
     LinkQueue q;
     InitQueue(&q);
@@ -134,7 +134,7 @@ Status LevelOrderTraverse(BiTree T, Status (*visit)(TElemType e))
     return OK;
 }
 
-Status preOrderTraverseNonRecur(BiTree T, Status (*visit)(TElemType e))
+Status preOrderTraverseNonRecur(BiTree T, void (*visit)(TElemType e))
 {
     LNodeStack S;
     InitLNodeStack(&S);
@@ -159,5 +159,67 @@ Status preOrderTraverseNonRecur(BiTree T, Status (*visit)(TElemType e))
             LNodeStack_Push(&S, e);
         }
     }
+    return OK;
+}
+
+Status inOrderTraverseNonRecur(BiTree T, void (*visit)(TElemType e))
+{
+    LNodeStack S;
+    InitLNodeStack(&S);
+    BiTree current = T;
+    while (current || StackEmpty(S) == FALSE)
+    {
+        if (current)
+        {
+            PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+            e->data = current;
+            LNodeStack_Push(&S, e);
+            current = current->lchild;
+        }
+        else
+        {
+            BiTree p = LNodeStack_Pop(&S)->data;
+            visit(p->data);
+            current = p->rchild;
+        }
+    }
+    return OK;
+}
+
+void reverseVisitStack(LNode *n)
+{
+    if (n)
+    {
+        printf("%c,", n->data->data->data);
+        reverseVisitStack(n->next);
+    }
+}
+
+Status postOrderTraverseNonRecur(BiTree T, void (*visit)(TElemType e))
+{
+    LNodeStack S1, S2;
+    InitLNodeStack(&S1);
+    InitLNodeStack(&S2);
+    PSElemType e = (PSElemType)malloc(sizeof(SElemType));
+    e->data = T;
+    LNodeStack_Push(&S1, e);
+    while (StackEmpty(S1) == FALSE)
+    {
+        PSElemType e = LNodeStack_Pop(&S1);
+        LNodeStack_Push(&S2, e);
+        if (e->data->lchild)
+        {
+            PSElemType le = (PSElemType)malloc(sizeof(SElemType));
+            le->data = e->data->lchild;
+            LNodeStack_Push(&S1, le);
+        }
+        if (e->data->rchild)
+        {
+            PSElemType re = (PSElemType)malloc(sizeof(SElemType));
+            re->data = e->data->rchild;
+            LNodeStack_Push(&S1, re);
+        }
+    }
+    reverseVisitStack(S2.top);
     return OK;
 }
